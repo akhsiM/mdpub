@@ -48,12 +48,12 @@ def parse_img(file):
     os.chdir(fileDir)
 
     # Find Images
-    imgs = re.compile(r'!\[.*\]\(.*\)').findall(Filestring)
+    matches = re.compile(r'!\[.*\]\(.*\)').findall(Filestring)
 
     # Handle possible URL encodings
     images = []
-    for img in imgs:
-        image = unquote(img)
+    for match in matches:
+        image = unquote(match)
         images.append(image)
     imagesNo = str(len(images))
 
@@ -74,9 +74,9 @@ def parse_img(file):
 
     # Change Image references to Jekyll dir i.e static/img/{title}/
     jekyllDir = f'/static/img/{title}/'
-    for image in images:
-        img = image[4:-1]
-        image2 = jekyllDir + os.path.basename(img)
+    for match in matches:
+        img = match[4:-1]
+        image2 = unquote(jekyllDir + os.path.basename(img))
         logger.info(f'Replacing {img} with {image2}..')
         Filestring = Filestring.replace(img, image2)
     
