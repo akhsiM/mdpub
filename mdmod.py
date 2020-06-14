@@ -1,4 +1,5 @@
 import os, sys, logging, re, shutil
+from urllib.parse import unquote
 
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.DEBUG)
@@ -47,10 +48,17 @@ def parse_img(file):
     os.chdir(fileDir)
 
     # Find Images
-    images = re.compile(r'!\[.*\]\(.*\)').findall(Filestring)
+    imgs = re.compile(r'!\[.*\]\(.*\)').findall(Filestring)
+
+    # Handle possible URL encodings
+    images = []
+    for img in imgs:
+        image = unquote(img)
+        images.append(image)
     imagesNo = str(len(images))
 
-    logger.info(f'Found {imagesNo} images in Markdown files. These are..')
+
+    logger.info(f'Found {imagesNo} images in Markdown files.')
     for image in images:
         logger.info(image)
 
@@ -79,4 +87,5 @@ def parse_img(file):
         newfile.write(Filestring)
     
 parse_img(sys.argv[1])
+
 
